@@ -56,23 +56,63 @@ class lex:
         self.index+= 1
         return chr
 
-    # assume current character is a number => return number token (num, '213')
+    # peeks and returns the next character
+    def _peek(self):
+        if (self._is_EOF()):
+            return None
+        return self.string[self.index + 1]
+
+    # assuming current character leads to a number will return a number token
     def _number_token(self):
-        numbers = "0123456789"
+        numbers = "0123456789."
         num = ""
+
+        num_decimal_points = 0
+
+
+        # negative numbers
+        if (self._get_cur_character() == "-"):
+            num += self._consume_character()
 
         while (self._get_cur_character() != None and self._get_cur_character() in numbers):
             num+=self._consume_character()
 
         return ("num", float(num))
 
-    # retrieves the next token
-    def _get_next_token(self):
+
+    # checks if the current character will lead to a num token
+    def _is_num_token(self, cur):
         numbers = "0123456789"
 
+        if (cur in numbers):
+            return True
+        elif (cur == "-" and self._peek() in numbers):
+            return True
+
+
+
+        return False
+
+
+
+    # retrieves the next token
+    def _get_next_token(self):
+
         self._consume_whitespace()
-        if (self._get_cur_character() != None and self._get_cur_character() in numbers):
+        cur = self._get_cur_character()
+
+        if (cur == None):
+            return None
+
+
+        elif (self._is_num_token(cur)):
             return self._number_token()
+
+
+
+
+
+
         else:
             return None
 
