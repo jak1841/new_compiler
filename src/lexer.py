@@ -34,55 +34,58 @@ class lex:
         self.index = 0
 
     # end of file reached => true else false
-    def is_EOF(self):
+    def _is_EOF(self):
         return len(self.string) <= self.index
 
     # current character is whitespace => increments index
-    def consume_whitespace(self):
-        while (self.is_EOF() == False and self.string[self.index].isspace()):
+    def _consume_whitespace(self):
+        while (self._is_EOF() == False and self.string[self.index].isspace()):
             self.index += 1
 
     # current character return
-    def get_cur_character(self):
-        if (self.is_EOF()):
+    def _get_cur_character(self):
+        if (self._is_EOF()):
             return None
         return self.string[self.index]
 
     # not EOF => increment index and return current character
-    def consume_character(self):
-        if (self.is_EOF()):
+    def _consume_character(self):
+        if (self._is_EOF()):
             return None
-        chr = self.get_cur_character()
+        chr = self._get_cur_character()
         self.index+= 1
         return chr
 
     # assume current character is a number => return number token (num, '213')
-    def number_token(self):
+    def _number_token(self):
         numbers = "0123456789"
         num = ""
 
-        while (self.get_cur_character() != None and self.get_cur_character() in numbers):
-            num+=self.consume_character()
+        while (self._get_cur_character() != None and self._get_cur_character() in numbers):
+            num+=self._consume_character()
 
         return ("num", float(num))
 
-    # retrieves the next token 
-    def get_next_token(self):
+    # retrieves the next token
+    def _get_next_token(self):
         numbers = "0123456789"
 
-        self.consume_whitespace()
-        if (self.get_cur_character() != None and self.get_cur_character() in numbers):
-            return self.number_token()
+        self._consume_whitespace()
+        if (self._get_cur_character() != None and self._get_cur_character() in numbers):
+            return self._number_token()
         else:
             return None
 
     # returns a list of tokens of the form (token_id, token_val)
     def get_list_token(self):
         lst_token = []
-        cur_token = ""
-        while (self.is_EOF() == False and cur_token != None):
-            cur_token = self.get_next_token()
+        cur_token = self._get_next_token()
+
+        while (cur_token != None):
             lst_token.append(cur_token)
+            cur_token = self._get_next_token()
+
+
 
         return lst_token
 
