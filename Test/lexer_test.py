@@ -40,15 +40,15 @@ class lexer_test(unittest.TestCase):
         l = lexer.lex("1")
         self.assertEqual([("num", 1.0)], l.get_list_token())
 
-        # single number - neg
-        l = lexer.lex("-21890")
-        self.assertEqual([("num", -21890.0)], l.get_list_token())
+        # single number
+        l = lexer.lex("21890")
+        self.assertEqual([("num", 21890.0)], l.get_list_token())
 
-        l = lexer.lex("-8321")
-        self.assertEqual([("num", -8321.0)], l.get_list_token())
+        l = lexer.lex("8321")
+        self.assertEqual([("num", 8321.0)], l.get_list_token())
 
-        l = lexer.lex("-1")
-        self.assertEqual([("num", -1.0)], l.get_list_token())
+        l = lexer.lex("1")
+        self.assertEqual([("num", 1.0)], l.get_list_token())
 
         # different num zeros prefixing number
         l = lexer.lex("0")
@@ -67,12 +67,11 @@ class lexer_test(unittest.TestCase):
         l = lexer.lex("13 82109 319020921090")
         self.assertEqual([("num", 13), ("num", 82109), ("num", 319020921090)], l.get_list_token())
 
-        l = lexer.lex("-120 -99991 -1890212012")
-        self.assertEqual([("num", -120), ("num", -99991), ("num", -1890212012)], l.get_list_token())
+        l = lexer.lex("120 99991 1890212012")
+        self.assertEqual([("num", 120), ("num", 99991), ("num", 1890212012)], l.get_list_token())
 
-        # mixed numbers
-        l = lexer.lex("210 -2192 8108210 -992199")
-        self.assertEqual([("num", 210), ("num", -2192), ("num", 8108210), ("num", -992199)], l.get_list_token())
+        l = lexer.lex("210 2192 8108210 992199")
+        self.assertEqual([("num", 210), ("num", 2192), ("num", 8108210), ("num", 992199)], l.get_list_token())
 
     # file contains only identifiers
     def test_identifier (self):
@@ -102,6 +101,38 @@ class lexer_test(unittest.TestCase):
             ("identifier", "WHAT"), ("identifier", "IT"), ("identifier", "fudge"),
             ("identifier", "black")], l.get_list_token())
 
+    # file contains only math operator
+    def test_mathop (self):
+        # single operators
+        l = lexer.lex("+")
+        self.assertEqual([("mathop", "+")], l.get_list_token())
+
+        l = lexer.lex("-")
+        self.assertEqual([("mathop", "-")], l.get_list_token())
+
+        l = lexer.lex("*")
+        self.assertEqual([("mathop", "*")], l.get_list_token())
+
+        l = lexer.lex("/")
+        self.assertEqual([("mathop", "/")], l.get_list_token())
+
+        # multiple operators
+        l = lexer.lex("+-/*")
+        self.assertEqual([("mathop", "+"), ("mathop", "-"), ("mathop", "/"),
+        ("mathop", "*")], l.get_list_token())
+
+        l = lexer.lex("--- --- ")
+        self.assertEqual([("mathop", "-"), ("mathop", "-"), ("mathop", "-"),
+        ("mathop", "-"), ("mathop", "-"), ("mathop", "-")], l.get_list_token())
+
+        l = lexer.lex("** //")
+        self.assertEqual([("mathop", "*"), ("mathop", "*"), ("mathop", "/"), ("mathop", "/")], l.get_list_token())
+
+        # multiple operator with spaces
+        l = lexer.lex("    +++            -/   * ")
+        self.assertEqual([("mathop", "+"), ("mathop", "+"), ("mathop", "+"),
+        ("mathop", "-"), ("mathop", "/"),
+        ("mathop", "*")], l.get_list_token())
 
 
 

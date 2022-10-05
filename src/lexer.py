@@ -60,6 +60,8 @@ class lex:
     def _peek(self):
         if (self._is_EOF()):
             return None
+        if (len(self.string) <= self.index + 1):
+            return None
         return self.string[self.index + 1]
 
 
@@ -75,10 +77,6 @@ class lex:
         numbers = "0123456789"
         num = ""
 
-        # negative numbers
-        if (self._get_cur_character() == "-"):
-            num += self._consume_character()
-
         while (self._get_cur_character() != None and self._get_cur_character() in numbers):
             num+=self._consume_character()
 
@@ -90,11 +88,7 @@ class lex:
 
         if (cur in numbers):
             return True
-        elif (cur == "-" and self._peek() in numbers):
-            return True
-
-
-
+            
         return False
 
     # assuming current character leads to a identifier will return a identifier token
@@ -120,6 +114,15 @@ class lex:
             return True
         return False
 
+    # assuming current character leads to a math operator will return a mathop token
+    def _math_operator_token(self):
+        return ("mathop", self._consume_character())
+
+    # checks if the current character will lead to a mathoperator token
+    def _is_math_operator_token(self, cur):
+        math_operators = "+*-/"
+        return cur in math_operators
+
     # retrieves the next token
     def _get_next_token(self):
 
@@ -133,6 +136,8 @@ class lex:
             return self._number_token()
         elif (self._is_identifier_token(cur)):
             return self._identfier_token()
+        elif (self._is_math_operator_token(cur)):
+            return self._math_operator_token()
 
 
 
