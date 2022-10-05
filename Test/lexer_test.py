@@ -134,6 +134,34 @@ class lexer_test(unittest.TestCase):
         ("mathop", "-"), ("mathop", "/"),
         ("mathop", "*")], l.get_list_token())
 
+    # file contains only paranthesis
+    def test_paranthesis (self):
+        l = lexer.lex("(")
+        self.assertEqual([("paranthesis", "(")], l.get_list_token())
+
+        l = lexer.lex(")")
+        self.assertEqual([("paranthesis", ")")], l.get_list_token())
+
+        # spaces for single
+        l = lexer.lex("   (     ")
+        self.assertEqual([("paranthesis", "(")], l.get_list_token())
+        l = lexer.lex("  )         ")
+        self.assertEqual([("paranthesis", ")")], l.get_list_token())
+
+        # multiple paranthesis
+        l = lexer.lex("() ")
+        self.assertEqual([("paranthesis", "("), ("paranthesis", ")")], l.get_list_token())
+
+        l = lexer.lex("((())) ")
+        self.assertEqual([("paranthesis", "("), ("paranthesis", "("), ("paranthesis", "("),
+         ("paranthesis", ")"), ("paranthesis", ")"), ("paranthesis", ")")], l.get_list_token())
+
+        # multiple spaces and multiple paranthesis 
+        l = lexer.lex("   ()(  )((  ((   )))     )")
+        self.assertEqual([("paranthesis", "("), ("paranthesis", ")"), ("paranthesis", "("),
+        ("paranthesis", ")"), ("paranthesis", "("), ("paranthesis", "("), ("paranthesis", "("),
+        ("paranthesis", "("), ("paranthesis", ")"), ("paranthesis", ")"), ("paranthesis", ")"),
+        ("paranthesis", ")")], l.get_list_token())
 
 
 

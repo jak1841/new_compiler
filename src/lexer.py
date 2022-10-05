@@ -88,7 +88,7 @@ class lex:
 
         if (cur in numbers):
             return True
-            
+
         return False
 
     # assuming current character leads to a identifier will return a identifier token
@@ -123,6 +123,15 @@ class lex:
         math_operators = "+*-/"
         return cur in math_operators
 
+    # assumign current character leads to a paranthesis will return paranthesis token
+    def _paranthesis_token (self):
+        return ("paranthesis", self._consume_character())
+
+    # checks if the current character will lead to a paranthesis token
+    def _is_paranthesis_token(self, cur):
+        paranthesis = "()"
+        return cur in paranthesis
+
     # retrieves the next token
     def _get_next_token(self):
 
@@ -138,6 +147,8 @@ class lex:
             return self._identfier_token()
         elif (self._is_math_operator_token(cur)):
             return self._math_operator_token()
+        elif (self._is_paranthesis_token(cur)):
+            return self._paranthesis_token()
 
 
 
@@ -159,6 +170,7 @@ class lex:
 
 
         return lst_token
+
 
 
 
