@@ -10,7 +10,7 @@
         (Integer, [0123456789]*)
         (MathOperator, [+, -, *, /])
         (Equality, [=])
-        (Variable, [A-Z|a-z])
+        (identifier, [A-Z|a-z]*)
         (Paranthesis, [(, )])
         (Print, print)
         (semicolon, ;)
@@ -62,13 +62,18 @@ class lex:
             return None
         return self.string[self.index + 1]
 
+
+
+    '''
+
+        Detecting tokens functions
+
+    '''
+
     # assuming current character leads to a number will return a number token
     def _number_token(self):
-        numbers = "0123456789."
+        numbers = "0123456789"
         num = ""
-
-        num_decimal_points = 0
-
 
         # negative numbers
         if (self._get_cur_character() == "-"):
@@ -78,7 +83,6 @@ class lex:
             num+=self._consume_character()
 
         return ("num", float(num))
-
 
     # checks if the current character will lead to a num token
     def _is_num_token(self, cur):
@@ -93,20 +97,42 @@ class lex:
 
         return False
 
+    # assuming current character leads to a identifier will return a identifier token
+    def _identfier_token(self):
+        lower = "abcdefghijklmnopqrstuvwxyz"
+        upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
+        alpha_range = lower + upper
+
+        ident = ""
+
+        while (self._get_cur_character() != None and self._get_cur_character() in alpha_range):
+            ident += self._consume_character()
+
+        return ("identifier", ident)
+
+    # checks if the current character will lead to identifier token
+    def _is_identifier_token(self, cur):
+        lower = "abcdefghijklmnopqrstuvwxyz"
+        upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+        if (cur in lower or cur in upper):
+            return True
+        return False
 
     # retrieves the next token
     def _get_next_token(self):
 
-        self._consume_whitespace()
+        self._consume_whitespace()  # gets rid of whitespace
         cur = self._get_cur_character()
 
         if (cur == None):
             return None
 
-
         elif (self._is_num_token(cur)):
             return self._number_token()
+        elif (self._is_identifier_token(cur)):
+            return self._identfier_token()
 
 
 

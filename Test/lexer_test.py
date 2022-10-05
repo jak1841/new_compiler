@@ -74,6 +74,37 @@ class lexer_test(unittest.TestCase):
         l = lexer.lex("210 -2192 8108210 -992199")
         self.assertEqual([("num", 210), ("num", -2192), ("num", 8108210), ("num", -992199)], l.get_list_token())
 
+    # file contains only identifiers
+    def test_identifier (self):
+        # single identifier
+        l = lexer.lex("count")
+        self.assertEqual([("identifier", "count")], l.get_list_token())
+
+        l = lexer.lex("x")
+        self.assertEqual([("identifier", "x")], l.get_list_token())
+
+        l = lexer.lex("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        self.assertEqual([("identifier", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")], l.get_list_token())
+
+        # spaces before and after identifier
+        l = lexer.lex("           bruh             ")
+        self.assertEqual([("identifier", "bruh")], l.get_list_token())
+
+        # multiple identifier
+        l = lexer.lex("read the words in my mouth")
+        self.assertEqual([("identifier", "read"), ("identifier", "the"),
+            ("identifier", "words"), ("identifier", "in"), ("identifier", "my"),
+            ("identifier", "mouth")], l.get_list_token())
+
+        # multiple identifier with spaces
+        l = lexer.lex("   abc    ANS     WHAT IT    fudge         black         ")
+        self.assertEqual([("identifier", "abc"), ("identifier", "ANS"),
+            ("identifier", "WHAT"), ("identifier", "IT"), ("identifier", "fudge"),
+            ("identifier", "black")], l.get_list_token())
+
+
+
+
 
 
 
