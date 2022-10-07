@@ -7,11 +7,11 @@
     Tokens Seperated by whitespace
 
     List of Token
-        (Integer, [0123456789]*)
-        (MathOperator, [+, -, *, /])
+        (Integer, [0123456789]*) X
+        (MathOperator, [+, -, *, /]) X
         (Equality, [=])
-        (identifier, [A-Z|a-z]*)
-        (Paranthesis, [(, )])
+        (identifier, [A-Z|a-z]*) X
+        (Paranthesis, [(, )]) X
         (Print, print)
         (semicolon, ;)
 """
