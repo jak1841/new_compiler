@@ -182,6 +182,24 @@ class lexer_test(unittest.TestCase):
         , ("equality", "="), ("equality", "="), ("equality", "="), ("equality", "=")
         ,("equality", "="), ("equality", "=")], l.get_list_token())
 
+    # file contains only semicolon
+    def test_semicolon(self):
+        l = lexer.lex(";")
+        self.assertEqual([("semicolon", ";")], l.get_list_token())
+
+        l = lexer.lex(" ;")
+        self.assertEqual([("semicolon", ";")], l.get_list_token())
+
+        l = lexer.lex("; ")
+        self.assertEqual([("semicolon", ";")], l.get_list_token())
+
+        l = lexer.lex(" ; ")
+        self.assertEqual([("semicolon", ";")], l.get_list_token())
+
+        l = lexer.lex(" ;; ; ;;  ;;;;")
+        self.assertEqual([("semicolon", ";"), ("semicolon", ";"), ("semicolon", ";")
+        , ("semicolon", ";"), ("semicolon", ";"), ("semicolon", ";"), ("semicolon", ";")
+        ,("semicolon", ";"), ("semicolon", ";")], l.get_list_token())
 
 
 

@@ -141,6 +141,17 @@ class lex:
     def _is_equality_token(self, cur):
         return cur == "="
 
+
+    # assuming current character leads to a semicolon token will return it
+    def _semicolon_token(self):
+        return ("semicolon", self._consume_character())
+
+    # checks if the current character will lead to semicolon token
+    def _is_semicolon_token(self,cur):
+        return cur == ";"
+
+
+
     # retrieves the next token
     def _get_next_token(self):
 
@@ -160,6 +171,8 @@ class lex:
             return self._paranthesis_token()
         elif (self._is_equality_token(cur)):
             return self._equality_token()
+        elif (self._is_semicolon_token(cur)):
+            return self._semicolon_token()
 
 
 
