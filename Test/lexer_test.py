@@ -156,14 +156,31 @@ class lexer_test(unittest.TestCase):
         self.assertEqual([("paranthesis", "("), ("paranthesis", "("), ("paranthesis", "("),
          ("paranthesis", ")"), ("paranthesis", ")"), ("paranthesis", ")")], l.get_list_token())
 
-        # multiple spaces and multiple paranthesis 
+        # multiple spaces and multiple paranthesis
         l = lexer.lex("   ()(  )((  ((   )))     )")
         self.assertEqual([("paranthesis", "("), ("paranthesis", ")"), ("paranthesis", "("),
         ("paranthesis", ")"), ("paranthesis", "("), ("paranthesis", "("), ("paranthesis", "("),
         ("paranthesis", "("), ("paranthesis", ")"), ("paranthesis", ")"), ("paranthesis", ")"),
         ("paranthesis", ")")], l.get_list_token())
 
+    # file contains only equaliy token
+    def test_equal (self):
+        l = lexer.lex("=")
+        self.assertEqual([("equality", "=")], l.get_list_token())
 
+        l = lexer.lex(" =")
+        self.assertEqual([("equality", "=")], l.get_list_token())
+
+        l = lexer.lex("= ")
+        self.assertEqual([("equality", "=")], l.get_list_token())
+
+        l = lexer.lex(" = ")
+        self.assertEqual([("equality", "=")], l.get_list_token())
+
+        l = lexer.lex(" = = = == = === ")
+        self.assertEqual([("equality", "="), ("equality", "="), ("equality", "=")
+        , ("equality", "="), ("equality", "="), ("equality", "="), ("equality", "=")
+        ,("equality", "="), ("equality", "=")], l.get_list_token())
 
 
 

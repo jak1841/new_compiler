@@ -132,6 +132,15 @@ class lex:
         paranthesis = "()"
         return cur in paranthesis
 
+
+    # assuming current character leads to a equality token will return equality token
+    def _equality_token(self):
+        return ("equality", self._consume_character())
+
+    # checks if the current characeter will lead to a equality token
+    def _is_equality_token(self, cur):
+        return cur == "="
+
     # retrieves the next token
     def _get_next_token(self):
 
@@ -149,6 +158,8 @@ class lex:
             return self._math_operator_token()
         elif (self._is_paranthesis_token(cur)):
             return self._paranthesis_token()
+        elif (self._is_equality_token(cur)):
+            return self._equality_token()
 
 
 
@@ -170,6 +181,7 @@ class lex:
 
 
         return lst_token
+
 
 
 
