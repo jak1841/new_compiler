@@ -9,11 +9,11 @@
     List of Token
         (Integer, [0123456789]*) X
         (MathOperator, [+, -, *, /]) X
-        (Equality, [=])
+        (Equality, [=]) X
         (identifier, [A-Z|a-z]*) X
         (Paranthesis, [(, )]) X
         (Print, print)
-        (semicolon, ;)
+        (semicolon, ;) X
 """
 
 # returns a string of characters from a specefic filename
@@ -103,6 +103,10 @@ class lex:
         while (self._get_cur_character() != None and self._get_cur_character() in alpha_range):
             ident += self._consume_character()
 
+        # keywords
+        if (ident == "print"):
+            return ("Print", ident)
+
         return ("identifier", ident)
 
     # checks if the current character will lead to identifier token
@@ -152,8 +156,41 @@ class lex:
 
 
 
-    # retrieves the next token
-    def _get_next_token(self):
+
+
+
+    # returns the next token
+    def get_next_token(self):
+        temp = self.index
+
+
+
+        self._consume_whitespace()  # gets rid of whitespace
+        cur = self._get_cur_character()
+
+        try:
+            if (cur == None):
+                return None
+            elif (self._is_num_token(cur)):
+                return self._number_token()
+            elif (self._is_identifier_token(cur)):
+                return self._identfier_token()
+            elif (self._is_math_operator_token(cur)):
+                return self._math_operator_token()
+            elif (self._is_paranthesis_token(cur)):
+                return self._paranthesis_token()
+            elif (self._is_equality_token(cur)):
+                return self._equality_token()
+            elif (self._is_semicolon_token(cur)):
+                return self._semicolon_token()
+        except:
+            pass
+        finally:
+            self.index = temp
+
+
+    # retrieves and consumes the next token
+    def _consume_next_token(self):
 
         self._consume_whitespace()  # gets rid of whitespace
         cur = self._get_cur_character()
@@ -173,6 +210,8 @@ class lex:
             return self._equality_token()
         elif (self._is_semicolon_token(cur)):
             return self._semicolon_token()
+        elif (self._is_bool_and(cur)):
+            return self._bool_and_token()
 
 
 
@@ -185,11 +224,11 @@ class lex:
     # returns a list of tokens of the form (token_id, token_val)
     def get_list_token(self):
         lst_token = []
-        cur_token = self._get_next_token()
+        cur_token = self._consume_next_token()
 
         while (cur_token != None):
             lst_token.append(cur_token)
-            cur_token = self._get_next_token()
+            cur_token = self._consume_next_token()
 
 
 

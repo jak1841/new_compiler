@@ -201,6 +201,27 @@ class lexer_test(unittest.TestCase):
         , ("semicolon", ";"), ("semicolon", ";"), ("semicolon", ";"), ("semicolon", ";")
         ,("semicolon", ";"), ("semicolon", ";")], l.get_list_token())
 
+    # file contains only print statement
+    def test_print(self):
+        l = lexer.lex("print")
+        self.assertEqual([("Print", "print")], l.get_list_token())
+
+        l = lexer.lex(" print")
+        self.assertEqual([("Print", "print")], l.get_list_token())
+
+        l = lexer.lex("print ")
+        self.assertEqual([("Print", "print")], l.get_list_token())
+
+        l = lexer.lex(" print ")
+        self.assertEqual([("Print", "print")], l.get_list_token())
+
+        l = lexer.lex(" print print print printprint")
+        self.assertEqual([("Print", "print"), ("Print", "print"), ("Print", "print")
+        , ("identifier", "printprint")], l.get_list_token())
+
+        l = lexer.lex("print()")
+        self.assertEqual([("Print", "print"), ("paranthesis", "("), ("paranthesis", ")")], l.get_list_token())
+
 
 
 
