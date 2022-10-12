@@ -222,6 +222,7 @@ class lexer_test(unittest.TestCase):
         l = lexer.lex("print()")
         self.assertEqual([("Print", "print"), ("paranthesis", "("), ("paranthesis", ")")], l.get_list_token())
 
+        
 
 
 

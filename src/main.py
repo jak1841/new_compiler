@@ -1,5 +1,5 @@
 import lexer
-
+import syntax_analysis as sa
 chr = lexer.get_characters_from_file("code.txt")
 
 
@@ -25,51 +25,14 @@ t = lexer.lex(chr)
 
 
 """
+list_tokens = t.get_list_token()
+lol = sa.syn_analysis(list_tokens)
 
-def e(t):
-    summ = T(t) + e_prime(t)
-    return summ
-
-def e_prime(t):
-    summ = 0
-    cur = t.get_next_token()
-    if (cur != None and cur[1] in "+-"):
-        t._consume_next_token()
-        if (cur[1] == "+"):
-            summ+=T(t)
-        else:
-            summ -= T(t)
-        summ+= e_prime(t)
-
-    return summ
-
-def T(t):
-    return factor(t) * T_prime(t)
+lol.execute_program()
 
 
-def T_prime(t):
-    summ = 1
-    cur = t.get_next_token()
-
-    if (cur != None and cur[1] in "*/"):
-        t._consume_next_token()
-        if (cur[1] == "*"):
-            summ*= factor(t)
-        else:
-            summ/= factor(t)
-
-        summ*= T_prime(t)
-
-    return summ
 
 
-def factor(t):
-    cur = t.get_next_token()
-    if (cur != None and cur[0] == "num" ):
-        return t._consume_next_token()[1]
-
-
-print(e(t))
 
 
 
