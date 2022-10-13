@@ -222,7 +222,26 @@ class lexer_test(unittest.TestCase):
         l = lexer.lex("print()")
         self.assertEqual([("Print", "print"), ("paranthesis", "("), ("paranthesis", ")")], l.get_list_token())
 
-        
+    # file contains only string statement
+    def test_string(self):
+        l = lexer.lex("\"\"")
+        self.assertEqual([("string", "")], l.get_list_token())
+
+        l = lexer.lex("\"I am a string!\"")
+        self.assertEqual([("string", "I am a string!")], l.get_list_token())
+
+        l = lexer.lex("\"Hello world \"")
+        self.assertEqual([("string", "Hello world ")], l.get_list_token())
+
+        l = lexer.lex("\" print (gg);\"")
+        self.assertEqual([("string", " print (gg);")], l.get_list_token())
+
+        l = lexer.lex("\" 5 + 3 - 18 / 89 * 69 \"")
+        self.assertEqual([("string", " 5 + 3 - 18 / 89 * 69 ")], l.get_list_token())
+
+        l = lexer.lex("\" whatcolorisyourbugati1829122 ; a z jka  aojstyuioqwsmxnbcvbansmxnvbcnxm,.<./?!-+qa 210912n 3189\"")
+        self.assertEqual([("string", " whatcolorisyourbugati1829122 ; a z jka  aojstyuioqwsmxnbcvbansmxnvbcnxm,.<./?!-+qa 210912n 3189")], l.get_list_token())
+
 
 
 

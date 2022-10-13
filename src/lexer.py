@@ -14,6 +14,7 @@
         (Paranthesis, [(, )]) X
         (Print, print)
         (semicolon, ;) X
+        (string, "[characters]*")
 """
 
 # returns a string of characters from a specefic filename
@@ -154,6 +155,26 @@ class lex:
     def _is_semicolon_token(self,cur):
         return cur == ";"
 
+    # assuming current character leads to a string token will return it
+    def _string_token(self):
+        str = ""
+        self._consume_character()   # removes first double quote
+        while (self._get_cur_character() != None and self._get_cur_character() != "\""):
+            str +=self._consume_character()
+
+        if (self._get_cur_character() == None):
+            raise Exception("Expected end double quote but got None")
+        self._consume_character() # removes second double quote
+
+        return ("string", str)
+
+
+    # checks if the current character will lead to a string token
+    def _is_string_token(self, cur):
+        if (cur == "\""):
+            return True
+
+
 
 
 
@@ -210,8 +231,10 @@ class lex:
             return self._equality_token()
         elif (self._is_semicolon_token(cur)):
             return self._semicolon_token()
-        elif (self._is_bool_and(cur)):
-            return self._bool_and_token()
+        elif (self._is_string_token(cur)):
+            return self._string_token()
+
+
 
 
 
