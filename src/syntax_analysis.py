@@ -8,7 +8,7 @@
 
     production rules
 
-    statement: print(exp);
+    statement: print(string); | print(exp);
 
 
     exp: exp + term | exp - term | term
@@ -87,8 +87,24 @@ class syn_analysis:
             raise Exception("expected token but got", self.tokens)
 
 
-    # Defines what a line of a code could look like and executes that line
-    def statement(self):
+
+    """
+
+        Printing methods handled below
+
+    """
+
+
+    # given a list of tokens will return true if it print an math expression
+    def _is_print_math_expression(self):
+        if (len(self.tokens) > 2 and self.tokens[0][0] == "Print"):
+            if (self.tokens[1][1] == "(" and (self.tokens[2][0] == "num" or self.tokens[2][1] == "(")):
+                return True
+
+        return False
+
+    # assuming that the list of tokens lead to a print an math expression executes that line
+    def print_math_expression(self):
         if (len(self.tokens) > 0 and self.tokens[0][0] == "Print"):
             self.tokens.pop(0)
             if (len(self.tokens) > 0 and self.tokens[0][1] == "("):
@@ -101,6 +117,44 @@ class syn_analysis:
                         print(x)
                         return
         raise Exception("Syntax error", self.tokens)
+
+
+    # assuming that the list of tokens leads to a print strign exceutes that line
+    def print_string(self):
+        self.tokens.pop(0) # consumes print statement
+        self.tokens.pop(0) # consume left paranthesis
+        print(self.tokens.pop(0)[1]) # print the string
+
+        if (len(self.tokens) > 0 and self.tokens[0][1] == ")"):
+            self.tokens.pop(0) # consumes right paranthesis
+            if (len(self.tokens) > 0 and self.tokens[0][1] == ";"):
+                self.tokens.pop(0)
+            else:
+                raise Exception("Expected a ; but got ", self.tokens)
+
+        else:
+            raise Exception("Expected a ) but got ", self.tokens)
+
+
+    # given a list of tokens will return true if it prints an string
+    def _is_print_string(self):
+        if (len(self.tokens) > 2 and self.tokens[0][0] == "Print"):
+            if (self.tokens[1][1] == "(" and self.tokens[2][0] == "string" ):
+                return True
+
+        return False
+
+
+
+
+    # Defines what a line of a code could look like and executes that line
+    def statement(self):
+        if (self._is_print_math_expression()):
+            self.print_math_expression()
+        elif (self._is_print_string()):
+            self.print_string()
+
+
 
     # executes the program line by line
     def execute_program(self):
