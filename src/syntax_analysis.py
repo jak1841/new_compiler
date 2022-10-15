@@ -8,7 +8,8 @@
 
     production rules
 
-    statement: print(string); | print(exp);
+    code: print_statement | identifier = [String | exp];
+    print_statement: print(string); | print(exp);
 
 
     exp: exp + term | exp - term | term
@@ -30,6 +31,7 @@
 
 class syn_analysis:
     def __init__(self, tokens):
+        self.sym_table = {}
         self.tokens = tokens
 
 
@@ -93,6 +95,37 @@ class syn_analysis:
         Printing methods handled below
 
     """
+    # given a list of tokens will return true if it prints an identfier
+    def _is_print_identfier(self):
+        if (len(self.tokens) > 2 and self.tokens[0][0] == "Print"):
+            if (self.tokens[1][1] == "(" and self.tokens[2][0] == "identifier"):
+                return True
+
+        return False
+
+
+    # assuming that list of tokens lead to a print identifier, executes that line
+    def print_identifier(self):
+        self.tokens.pop(0) # consume print
+        self.tokens.pop(0) # consumes (
+
+        cur = self.tokens.pop(0) # consumes identfier
+
+        if (cur not in self.sym_table):
+            raise Exception("unexpected symbol:", cur)
+
+        value = self.sym_table[cur] # retrives the value at the symbol table
+        print(value)
+
+        if (len(self.tokens) > 1):
+            if (self.tokens[0][1] == ")" and self.tokens[1][1] == ";"):
+                self.tokens.pop(0) # consume right paranthesis
+                self.tokens.pop(0) # consume the end semicolon
+                return
+        raise Exception("expected ), or ; but got", self.tokens)
+
+
+
 
 
     # given a list of tokens will return true if it print an math expression
@@ -118,7 +151,6 @@ class syn_analysis:
                         return
         raise Exception("Syntax error", self.tokens)
 
-
     # assuming that the list of tokens leads to a print strign exceutes that line
     def print_string(self):
         self.tokens.pop(0) # consumes print statement
@@ -135,11 +167,39 @@ class syn_analysis:
         else:
             raise Exception("Expected a ) but got ", self.tokens)
 
-
     # given a list of tokens will return true if it prints an string
     def _is_print_string(self):
         if (len(self.tokens) > 2 and self.tokens[0][0] == "Print"):
             if (self.tokens[1][1] == "(" and self.tokens[2][0] == "string" ):
+                return True
+
+        return False
+
+
+    # assumign that the list of tokens leads to identfier assignment executes that line
+    def identfier_assignment(self):
+        ident = self.tokens.pop(0) # consumes identifier
+        self.tokens.pop(0) # consume equality
+
+        if (len(self.tokens) > 0 and self.tokens[0][0] == "string"):
+            self.sym_table[ident] = self.tokens.pop(0)[1] # add new value to symbol table
+        elif (len(self.tokens) > 0 and self.tokens[0][0] == "num"):
+            self.sym_table[ident] = self.exp()
+        else:
+            raise Exception("expected a num or string but got", self.tokens)
+
+        # ensures ; at the end
+        if (len(self.tokens) > 0 and self.tokens[0][1] == ";"):
+            self.tokens.pop(0)
+            return
+        raise Exception("expected ; but got", self.tokens)
+
+
+
+    # given a list of tokens will reture true if it is an identfier assigment statement
+    def _is_identifier_assigment(self):
+        if (len(self.tokens) > 1 and self.tokens[0][0] == "identifier"):
+            if (self.tokens[1][1] == "="):
                 return True
 
         return False
@@ -151,8 +211,12 @@ class syn_analysis:
     def statement(self):
         if (self._is_print_math_expression()):
             self.print_math_expression()
+        elif (self._is_print_identfier()):
+            self.print_identifier()
         elif (self._is_print_string()):
             self.print_string()
+        elif (self._is_identifier_assigment()):
+            self.identfier_assignment()
 
 
 
