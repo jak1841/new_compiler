@@ -14,7 +14,7 @@
 
     exp: exp + term | exp - term | term
     term: factor * term | factor / term | factor
-    factor: [0123456789]* | (exp)
+    factor: [0123456789]* | (exp) | identifier
 
     **Elimination of left recursion**
     exp: term exp'
@@ -84,6 +84,15 @@ class syn_analysis:
                 return res
             else:
                 raise Exception("expected ) but got", self.tokens)
+        elif (len(self.tokens) > 0 and self.tokens[0][0] == "identifier"):
+            # consumes the token
+            cur = self.tokens.pop(0)
+
+            if (cur not in self.sym_table):
+                raise Exception("unexpected symbol", cur)
+
+            return self.sym_table[cur]
+
 
         else:
             raise Exception("expected token but got", self.tokens)
@@ -97,8 +106,8 @@ class syn_analysis:
     """
     # given a list of tokens will return true if it prints an identfier
     def _is_print_identfier(self):
-        if (len(self.tokens) > 2 and self.tokens[0][0] == "Print"):
-            if (self.tokens[1][1] == "(" and self.tokens[2][0] == "identifier"):
+        if (len(self.tokens) > 3 and self.tokens[0][0] == "Print"):
+            if (self.tokens[1][1] == "(" and self.tokens[2][0] == "identifier" and self.tokens[3][1] == ")"):
                 return True
 
         return False
@@ -130,9 +139,22 @@ class syn_analysis:
 
     # given a list of tokens will return true if it print an math expression
     def _is_print_math_expression(self):
+        # number or (
         if (len(self.tokens) > 2 and self.tokens[0][0] == "Print"):
-            if (self.tokens[1][1] == "(" and (self.tokens[2][0] == "num" or self.tokens[2][1] == "(")):
-                return True
+            if (self.tokens[1][1] == "("):
+                if (self.tokens[2][0] == "num"):
+                    return True
+                elif (self.tokens[2][1] == "("):
+                    return True
+
+        # identfier
+        if (len(self.tokens) > 3 and self.tokens[0][0] == "Print" and self.tokens[1][1] == "("):
+            if (self.tokens[2][0] == "identifier"):
+                if (self.tokens[3][0] == "mathop"):
+                    return True
+
+
+
 
         return False
 
