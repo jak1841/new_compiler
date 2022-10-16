@@ -198,7 +198,7 @@ class syn_analysis:
         return False
 
 
-    # assumign that the list of tokens leads to identfier assignment executes that line
+    # assuming that the list of tokens leads to identfier assignment executes that line
     def identfier_assignment(self):
         ident = self.tokens.pop(0) # consumes identifier
         self.tokens.pop(0) # consume equality
