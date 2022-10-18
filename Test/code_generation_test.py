@@ -63,7 +63,7 @@ class code_generation(unittest.TestCase):
         "65055834.0\n", "0.031435472739820565\n","5742.0\n","-4130.905049261084\n" ],
         self.get_content_file(self.output_file))
 
-        # printing identfier
+        # printing identfiers
         # printing math expressions
         code = """
                     x = 920;
@@ -86,8 +86,42 @@ class code_generation(unittest.TestCase):
 
     # testing the mathexpression function
     def test_math_expression(self):
-        code = """print(\"hello test\");"""
+        # basic math operations (+-*/, (), )
+        code = """print(129 + 313);
+                  print (1921 -21920);
+                  print (931000 * 219) ;
+                  print(821919295/ 5) ;
+                  print(17 - 2910 - 8192 + 238923 -23 + 320-32);
+                  print(82198311 - 82392 * 2389/ 2389 + (0 - 9120));
+                  print((((((892)* 7)-910)+9210)/8)*999);
+                  print((93290) -9203 /(424*324*234) *(234 *324*424));
+                                            """
         self.run_string(code)
+        self.assertEqual(["442.0\n", "-19999.0\n", "203889000.0\n",
+        "164383859.0\n", "228103.0\n", "82106799.0\n","1816182.0\n",
+         "84087.0\n"], self.get_content_file(self.output_file))
+
+        # identifiers in math expressions
+        code = """
+                    x = (319201 + 021- 92012);
+                    y = 8128 -2910 *21891 + 2021;
+                    z = (10202/202) + 9210*2;
+                    print(x);
+                    print(y);
+                    print(z);
+                    w = x + y + z;
+                    print((w));
+                    print(x + y - (w - z));
+                    print((x * x + y) + 321);
+                    print(328192 - 1 * z);
+
+
+                                            """
+        self.run_string(code)
+        self.assertEqual(["227210.0\n", "-63692661.0\n", "18470.50495049505\n",
+        "-63446980.49504951\n", "0.0\n", "51560691760.0\n","309721.49504950497\n",
+         ], self.get_content_file(self.output_file))
+
 
 
 if __name__ == '__main__':

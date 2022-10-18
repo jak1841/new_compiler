@@ -209,6 +209,8 @@ class syn_analysis:
             self.sym_table[ident] = self.exp()
         elif (len(self.tokens) > 0 and self.tokens[0][1] == "("):
             self.sym_table[ident] = self.exp()
+        elif (len(self.tokens) > 0 and self.tokens[0][0] == "identifier"):
+            self.sym_table[ident] = self.exp()
         else:
             raise Exception("expected a num or string but got", self.tokens)
 
