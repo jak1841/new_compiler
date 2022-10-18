@@ -80,10 +80,6 @@ class code_generation(unittest.TestCase):
         "-16904.0\n",],self.get_content_file(self.output_file))
 
 
-
-
-
-
     # testing the mathexpression function
     def test_math_expression(self):
         # basic math operations (+-*/, (), )
@@ -122,6 +118,21 @@ class code_generation(unittest.TestCase):
         "-63446980.49504951\n", "0.0\n", "51560691760.0\n","309721.49504950497\n",
          ], self.get_content_file(self.output_file))
 
+
+    # testing identfier assignment
+    def test_identifier_assignment(self):
+        code = """x = 3289;
+                  y = 69 - 420;
+                  z = "hello world";
+                  d = (911);
+                  print(x);
+                  print(y);
+                  print(z);
+                  print(d);
+                                            """
+        self.run_string(code)
+        self.assertEqual(["3289.0\n", "-351.0\n", "hello world\n",
+        "911.0\n"], self.get_content_file(self.output_file))
 
 
 if __name__ == '__main__':
