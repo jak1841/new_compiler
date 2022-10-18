@@ -207,6 +207,8 @@ class syn_analysis:
             self.sym_table[ident] = self.tokens.pop(0)[1] # add new value to symbol table
         elif (len(self.tokens) > 0 and self.tokens[0][0] == "num"):
             self.sym_table[ident] = self.exp()
+        elif (len(self.tokens) > 0 and self.tokens[0][1] == "("):
+            self.sym_table[ident] = self.exp()
         else:
             raise Exception("expected a num or string but got", self.tokens)
 
@@ -215,8 +217,6 @@ class syn_analysis:
             self.tokens.pop(0)
             return
         raise Exception("expected ; but got", self.tokens)
-
-
 
     # given a list of tokens will reture true if it is an identfier assigment statement
     def _is_identifier_assigment(self):
