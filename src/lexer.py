@@ -15,6 +15,9 @@
         (Print, print)
         (semicolon, ;) X
         (string, "[characters]*")
+        (boolean, true | false)
+        (logical_operators or | and)
+
 """
 
 # returns a string of characters from a specefic filename
@@ -107,6 +110,11 @@ class lex:
         # keywords
         if (ident == "print"):
             return ("Print", ident)
+        elif (ident in ["true", "false"]):
+            return ("boolean", ident)
+        elif (ident in ["or", "and"]):
+            return ("logical_operators", ident)
+
 
         return ("identifier", ident)
 

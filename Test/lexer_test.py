@@ -242,9 +242,60 @@ class lexer_test(unittest.TestCase):
         l = lexer.lex("\" whatcolorisyourbugati1829122 ; a z jka  aojstyuioqwsmxnbcvbansmxnvbcnxm,.<./?!-+qa 210912n 3189\"")
         self.assertEqual([("string", " whatcolorisyourbugati1829122 ; a z jka  aojstyuioqwsmxnbcvbansmxnvbcnxm,.<./?!-+qa 210912n 3189")], l.get_list_token())
 
+    # file contains only boolean operators and values
+    def test_boolean_all (self):
+        l = lexer.lex("true ")
+        self.assertEqual([("boolean", "true")], l.get_list_token())
 
+        l = lexer.lex("false ")
+        self.assertEqual([("boolean", "false")], l.get_list_token())
 
+        l = lexer.lex(" true      false")
+        self.assertEqual([("boolean", "true"),  ("boolean", "false")], l.get_list_token())
 
+        l = lexer.lex("false      true       ")
+        self.assertEqual([("boolean", "false"),  ("boolean", "true")], l.get_list_token())
+
+        l = lexer.lex("   false true true false    true false   true false true true false false false   ")
+        self.assertEqual([("boolean", "false"),  ("boolean", "true"), ("boolean", "true"),
+        ("boolean", "false"), ("boolean", "true"), ("boolean", "false"), ("boolean", "true"),
+        ("boolean", "false"), ("boolean", "true"), ("boolean", "true"), ("boolean", "false"),
+        ("boolean", "false"), ("boolean", "false")], l.get_list_token())
+
+        l = lexer.lex(" and")
+        self.assertEqual([("logical_operators", "and")], l.get_list_token())
+
+        l = lexer.lex("or ")
+        self.assertEqual([("logical_operators", "or")], l.get_list_token())
+
+        l = lexer.lex(" and or ")
+        self.assertEqual([("logical_operators", "and"), ("logical_operators", "or")], l.get_list_token())
+
+        l = lexer.lex(" or and ")
+        self.assertEqual([("logical_operators", "or"), ("logical_operators", "and")], l.get_list_token())
+
+        l = lexer.lex(" or and and and or      or or    and or and or ")
+        self.assertEqual([("logical_operators", "or"), ("logical_operators", "and"), ("logical_operators", "and"),
+        ("logical_operators", "and"), ("logical_operators", "or"), ("logical_operators", "or"),
+        ("logical_operators", "or"), ("logical_operators", "and"), ("logical_operators", "or"),
+        ("logical_operators", "and"), ("logical_operators", "or")], l.get_list_token())
+
+        l = lexer.lex("   true and false")
+        self.assertEqual([("boolean", "true"), ("logical_operators", "and"), ("boolean", "false")], l.get_list_token())
+
+        l = lexer.lex("true and true    ")
+        self.assertEqual([("boolean", "true"), ("logical_operators", "and"), ("boolean", "true")], l.get_list_token())
+
+        l = lexer.lex("false or    false")
+        self.assertEqual([("boolean", "false"), ("logical_operators", "or"), ("boolean", "false")], l.get_list_token())
+
+        l = lexer.lex("false    or true")
+        self.assertEqual([("boolean", "false"), ("logical_operators", "or"), ("boolean", "true")], l.get_list_token())
+
+        l = lexer.lex("   false and true      and false or true and    true or false  ")
+        self.assertEqual([("boolean", "false"), ("logical_operators", "and"), ("boolean", "true"),
+        ("logical_operators", "and"), ("boolean", "false"), ("logical_operators", "or"), ("boolean", "true"),
+        ("logical_operators", "and"), ("boolean", "true"), ("logical_operators", "or"), ("boolean", "false")], l.get_list_token())
 
 
 

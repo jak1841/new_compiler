@@ -8,7 +8,7 @@
 
     production rules
 
-    code: print_statement | identifier = [String | exp];
+    code: print_statement | identifier = [String | exp | identifier];
     print_statement: print(string); | print(exp);
 
 
@@ -34,7 +34,11 @@ class syn_analysis:
         self.sym_table = {}
         self.tokens = tokens
 
-
+    # this method will be used when doing an error
+    def expected_token(self, expected_token):
+        if (len(self.tokens) > 0):
+            raise Exception("Expected", expected_token, "but got", self.tokens[0])
+        raise Exception("Expected", expected_token, "but got", None)
     """
         This is for evaluating math expressions
     """
@@ -83,7 +87,7 @@ class syn_analysis:
                 self.tokens.pop(0)
                 return res
             else:
-                raise Exception("expected ) but got", self.tokens)
+                self.expected_token(")")
         elif (len(self.tokens) > 0 and self.tokens[0][0] == "identifier"):
             # consumes the token
             cur = self.tokens.pop(0)
@@ -95,7 +99,7 @@ class syn_analysis:
 
 
         else:
-            raise Exception("expected token but got", self.tokens)
+            self.expected_token("token")
 
 
 
@@ -131,7 +135,7 @@ class syn_analysis:
                 self.tokens.pop(0) # consume right paranthesis
                 self.tokens.pop(0) # consume the end semicolon
                 return
-        raise Exception("expected ), or ; but got", self.tokens)
+        self.expected_token(") or ;")
 
 
 
