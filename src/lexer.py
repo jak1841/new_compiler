@@ -17,6 +17,7 @@
         (string, "[characters]*")
         (boolean, true | false)
         (logical_operators or | and)
+        (datatype, float | string | bool)
 
 """
 
@@ -114,6 +115,8 @@ class lex:
             return ("boolean", ident)
         elif (ident in ["or", "and"]):
             return ("logical_operators", ident)
+        elif (ident in ["string", "float", "bool"]):
+            return ("datatype", ident)
 
 
         return ("identifier", ident)

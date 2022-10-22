@@ -297,7 +297,24 @@ class lexer_test(unittest.TestCase):
         ("logical_operators", "and"), ("boolean", "false"), ("logical_operators", "or"), ("boolean", "true"),
         ("logical_operators", "and"), ("boolean", "true"), ("logical_operators", "or"), ("boolean", "false")], l.get_list_token())
 
+    # file contains only datatypes
+    def test_datatypes (self):
+        l = lexer.lex(" float")
+        self.assertEqual([("datatype", "float")], l.get_list_token())
 
+        l = lexer.lex("string ")
+        self.assertEqual([("datatype", "string")], l.get_list_token())
+
+        l = lexer.lex(" bool ")
+        self.assertEqual([("datatype", "bool")], l.get_list_token())
+
+        l = lexer.lex("bool float string")
+        self.assertEqual([("datatype", "bool"), ("datatype", "float"), ("datatype", "string")], l.get_list_token())
+
+        l = lexer.lex(" string bool bool float      string float float string string ")
+        self.assertEqual([("datatype", "string"), ("datatype", "bool"), ("datatype", "bool"),
+        ("datatype", "float"), ("datatype", "string"), ("datatype", "float"),
+        ("datatype", "float"), ("datatype", "string"), ("datatype", "string")], l.get_list_token())
 
 
 if __name__ == '__main__':

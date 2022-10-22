@@ -8,21 +8,27 @@
 
     production rules
 
-    code: print_statement | identifier = [String | exp | identifier];
-    print_statement: print(string); | print(exp);
+    code: print_statement | assignment
+
+    print_statement: print(string); | print(exp) | print(identifier);
+
+    assignment -> identifier = [String | exp | identifier | boolean];
 
 
-    exp: exp + term | exp - term | term
-    term: factor * term | factor / term | factor
-    factor: [0123456789]* | (exp) | identifier
+    bool_exp -> bool_exp or bool_term | bool_term
+    bool_term -> bool_term and bool_factor | boolean
+    bool_factor -> boolean | (bool_exp)
+    boolean -> true | false
 
-    **Elimination of left recursion**
+    ** Eliminating left recursion**
+    bool_exp -> bool_term bool_exp'
+    bool_exp' -> and bool_term bool_exp' | e
+    bool_term -> bool_
+
     exp: term exp'
     exp': +term exp' | -term exp' | e
-
     term: factor term'
     term': *factor term' | /factor term' | e
-
     factor: [0123456789]* | (exp)
 
 
@@ -34,11 +40,17 @@ class syn_analysis:
         self.sym_table = {}
         self.tokens = tokens
 
-    # this method will be used when doing an error
+    # this method used when expected symbol not correct symbol
     def expected_token(self, expected_token):
         if (len(self.tokens) > 0):
             raise Exception("Expected", expected_token, "but got", self.tokens[0])
         raise Exception("Expected", expected_token, "but got", None)
+
+    # error when encountering unexpected symbol
+    def unexpected_symbol(self):
+        raise Exception("unexpected symbol", cur)
+
+
     """
         This is for evaluating math expressions
     """
@@ -93,7 +105,7 @@ class syn_analysis:
             cur = self.tokens.pop(0)
 
             if (cur not in self.sym_table):
-                raise Exception("unexpected symbol", cur)
+                self.unexpected_symbol()
 
             return self.sym_table[cur]
 
