@@ -66,10 +66,10 @@ class code_generation(unittest.TestCase):
         # printing identfiers
         # printing math expressions
         code = """
-                    x = 920;
-                    y = "heehjiedwnodnjdskdsnndksjnflnsdkf";
-                    z = "1 + 3203 /283 &28b 302-";
-                    w = (0 - 1)*((123 + 8329) *2/ (911-910));
+                    float x = 920;
+                    string y = "heehjiedwnodnjdskdsnndksjnflnsdkf";
+                    string z = "1 + 3203 /283 &28b 302-";
+                    float w = (0 - 1)*((123 + 8329) *2/ (911-910));
                     print(x);
                     print(y);
                     print(z);
@@ -99,13 +99,13 @@ class code_generation(unittest.TestCase):
 
         # identifiers in math expressions
         code = """
-                    x = (319201 + 021- 92012);
-                    y = 8128 -2910 *21891 + 2021;
-                    z = (10202/202) + 9210*2;
+                    float x = (319201 + 021- 92012);
+                    float y = 8128 -2910 *21891 + 2021;
+                    float z = (10202/202) + 9210*2;
                     print(x);
                     print(y);
                     print(z);
-                    w = x + y + z;
+                    float w = x + y + z;
                     print((w));
                     print(x + y - (w - z));
                     print((x * x + y) + 321);
@@ -121,10 +121,10 @@ class code_generation(unittest.TestCase):
 
     # testing identfier assignment
     def test_identifier_assignment(self):
-        code = """x = 3289;
-                  y = 69 - 420;
-                  z = "hello world";
-                  d = (911);
+        code = """float x = 3289;
+                  float y = 69 - 420;
+                  float z = "hello world";
+                  float d = (911);
                   print(x);
                   print(y);
                   print(z);

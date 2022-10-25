@@ -4,11 +4,20 @@
 
 """
 
+
+"""
+    Symbol table structure is hashmap key -> value
+    key = (identifier, identifier_name)
+    value = [datatype, val]
+
+
+"""
+
 """
 
     production rules
 
-    code: print_statement | assignment
+    code: [print_statement | assignment]*
 
     print_statement: print(string); | print(exp) | print(identifier);
 
@@ -80,15 +89,7 @@ class syn_analysis:
 
 
 
-    # where the error is in the code
-    def expected_token(self, expected_type):
-        if (len(self.tokens) > 0):
-            raise Exception("Expected", expected_type, "but got", self.tokens[0])
-        raise Exception("Expected", expected_type, "but got", None)
 
-    # error when encountering unexpected symbol
-    def unexpected_symbol(self):
-        raise Exception("unexpected symbol", cur)
 
 
     """
@@ -147,7 +148,7 @@ class syn_analysis:
             if (cur not in self.sym_table):
                 self.unexpected_symbol()
 
-            return self.sym_table[cur]
+            return self.sym_table[cur][1]
 
 
         else:
@@ -177,7 +178,7 @@ class syn_analysis:
 
         symbol = self.match_symbol(identifier_token)
         value = self.sym_table[symbol] # retrives the value at the symbol table
-        print(value)
+        print(value[1])
 
         self.match_token_val(")")
         self.match_token_val(";")
@@ -237,17 +238,19 @@ class syn_analysis:
 
     # assuming that the list of tokens leads to identfier assignment executes that line
     def identfier_assignment(self):
+        datatype = self.match_token_type("datatype")[1]
+
         ident = self.match_token_type("identifier")
         self.match_token_val("=")
 
         if (self.is_next_token_type_same("string")):
-            self.sym_table[ident] = self.match_token_type("string")[1]
+            self.sym_table[ident] = [datatype] + [self.match_token_type("string")[1]]
         elif (self.is_next_token_type_same("num")):
-            self.sym_table[ident] = self.exp()
+            self.sym_table[ident] = [datatype] + [self.exp()]
         elif (self.is_next_token_type_same("paranthesis")):
-            self.sym_table[ident] = self.exp()
+            self.sym_table[ident] = [datatype] + [self.exp()]
         elif (self.is_next_token_type_same("identifier")):
-            self.sym_table[ident] = self.exp()
+            self.sym_table[ident] = [datatype] + [self.exp()]
         else:
             raise Exception("expected a num or string but got", self.tokens)
 
@@ -255,9 +258,8 @@ class syn_analysis:
 
     # given a list of tokens will reture true if it is an identfier assigment statement
     def _is_identifier_assigment(self):
-        if (len(self.tokens) > 1 and self.tokens[0][0] == "identifier"):
-            if (self.tokens[1][1] == "="):
-                return True
+        if (len(self.tokens) > 1 and self.tokens[0][0] == "datatype"):
+            return True
 
         return False
 
@@ -274,6 +276,8 @@ class syn_analysis:
             self.print_string()
         elif (self._is_identifier_assigment()):
             self.identfier_assignment()
+        else:
+            self.match_token_type("statement")
 
 
 
