@@ -26,14 +26,16 @@
 
 
     bool_exp -> bool_exp or bool_term | bool_term
-    bool_term -> bool_term and bool_factor | boolean
-    bool_factor -> boolean | (bool_exp)
-    boolean -> true | false
+    bool_term -> bool_term and bool_factor | bool_factor
+    bool_factor -> true | false | (bool_exp)
+
 
     ** Eliminating left recursion**
     bool_exp -> bool_term bool_exp'
-    bool_exp' -> and bool_term bool_exp' | e
-    bool_term -> bool_
+    bool_exp' -> or bool_term bool_exp' | e
+    bool_term -> bool_factor bool_term'
+    bool_term' -> or bool_factor bool_term' |
+    bool_factor -> true | false | (bool_exp)
 
     exp: term exp'
     exp': +term exp' | -term exp' | e
@@ -146,14 +148,69 @@ class syn_analysis:
             cur = self.tokens.pop(0)
 
             if (cur not in self.sym_table):
-                self.unexpected_symbol()
+                self.match_symbol(cur)
 
             return self.sym_table[cur][1]
 
 
         else:
-            self.expected_token("token")
+            self.match_token_type("num or identifier")
 
+
+    """
+        Evaluating boolean expressions
+    """
+
+    def bool_exp(self):
+        x = self.bool_term()
+        y = self.bool_exp_prime()
+        return x or y
+
+
+    def bool_exp_prime (self):
+        if (len(self.tokens) > 0 and self.tokens[0][1] == "or"):
+            self.match_token_val("or")
+            x = self.bool_term()
+            y = self.bool_exp_prime()
+            return x or y
+
+        return False
+
+
+    def bool_term (self):
+        x = self.bool_factor()
+        y = self.bool_term_prime()
+
+        return x and y
+
+    def bool_term_prime (self):
+        if (len(self.tokens) > 0 and self.tokens[0][1] == "and"):
+            self.match_token_val("and")
+            x = self.bool_factor()
+            y = self.bool_term_prime()
+            return x and y
+
+        return True
+
+    def bool_factor (self):
+        if (self.is_next_token_type_same("boolean")):
+            boolean = self.match_token_type("boolean")[1]
+            if (boolean == "True"):
+                return True
+            else:
+                return False
+        elif (self.is_next_token_type_same("paranthesis")):
+            self.match_token_val("(")
+            x = self.bool_exp()
+            self.match_token_val(")")
+            return x
+        elif (self.is_next_token_type_same("identifier")):
+            symbol = self.match_token_type("identifier")
+            value = self.match_symbol(symbol)
+            return value[1]
+
+        else:
+            self.match_token_type("boolean or paranthesis")
 
 
     """
@@ -182,7 +239,6 @@ class syn_analysis:
 
         self.match_token_val(")")
         self.match_token_val(";")
-
 
 
 
@@ -243,14 +299,12 @@ class syn_analysis:
         ident = self.match_token_type("identifier")
         self.match_token_val("=")
 
-        if (self.is_next_token_type_same("string")):
+        if (datatype == "string"):
             self.sym_table[ident] = [datatype] + [self.match_token_type("string")[1]]
-        elif (self.is_next_token_type_same("num")):
+        elif (datatype == "float"):
             self.sym_table[ident] = [datatype] + [self.exp()]
-        elif (self.is_next_token_type_same("paranthesis")):
-            self.sym_table[ident] = [datatype] + [self.exp()]
-        elif (self.is_next_token_type_same("identifier")):
-            self.sym_table[ident] = [datatype] + [self.exp()]
+        elif (datatype == "bool"):
+            self.sym_table[ident] = [datatype] + [self.bool_exp()]
         else:
             raise Exception("expected a num or string but got", self.tokens)
 

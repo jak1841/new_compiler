@@ -123,7 +123,7 @@ class code_generation(unittest.TestCase):
     def test_identifier_assignment(self):
         code = """float x = 3289;
                   float y = 69 - 420;
-                  float z = "hello world";
+                  string z = "hello world";
                   float d = (911);
                   print(x);
                   print(y);
@@ -133,6 +133,59 @@ class code_generation(unittest.TestCase):
         self.run_string(code)
         self.assertEqual(["3289.0\n", "-351.0\n", "hello world\n",
         "911.0\n"], self.get_content_file(self.output_file))
+
+    # testing boolean evaluation
+    def test_boolean_expression_eval(self):
+        # Truth table of AND or OR
+        code = """
+                bool y = False or False;
+                print(y);
+                bool y = False or True;
+                print(y);
+                bool y = True or False;
+                print(y);
+                bool y = True or True;
+                print(y);
+
+                bool x = True and True;
+                print(x);
+                bool x = True and False;
+                print(x);
+                bool x = False and True;
+                print(x);
+                bool x = False and False;
+                print(x);
+
+                                        """
+        self.run_string(code)
+        self.assertEqual(["False\n", "True\n", "True\n", "True\n",
+        "True\n", "False\n", "False\n", "False\n"], self.get_content_file(self.output_file))
+
+        code = """
+                bool y = (False) or (False or True);
+                print(y);
+                bool y = (False or True) and True;
+                print(y);
+                bool y = False and (True);
+                print(y);
+                bool y = True or (False and True);
+                print(y);
+
+                bool x = True and True;
+                print(x);
+                bool z = True and x;
+                print(z);
+                bool final = x and z and False;
+                print(final);
+                bool x = False or (False and True) or (True and x and z and False);
+                print(x);
+
+
+                                        """
+        self.run_string(code)
+        self.assertEqual(["True\n", "True\n", "False\n", "True\n",
+        "True\n", "True\n", "False\n", "False\n"], self.get_content_file(self.output_file))
+
 
 
 if __name__ == '__main__':

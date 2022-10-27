@@ -1,7 +1,18 @@
-float x = 0;
+bool y = false or false;
+print(y);
+bool y = false or true;
+print(y);
+bool y = true or false;
+print(y);
+bool y = true or true;
+print(y);
+
+bool x = true and true;
+print(x);
+bool x = true and false;
+print(x);
+bool x = false and true;
+print(x);
+bool x = false and false;
 print(x);
 
-string l = "bruh";
-print(l);
-
-l = 0;

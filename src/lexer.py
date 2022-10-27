@@ -111,7 +111,7 @@ class lex:
         # keywords
         if (ident == "print"):
             return ("Print", ident)
-        elif (ident in ["true", "false"]):
+        elif (ident in ["True", "False"]):
             return ("boolean", ident)
         elif (ident in ["or", "and"]):
             return ("logical_operators", ident)
