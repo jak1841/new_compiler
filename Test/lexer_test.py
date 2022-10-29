@@ -316,6 +316,18 @@ class lexer_test(unittest.TestCase):
         ("datatype", "float"), ("datatype", "string"), ("datatype", "float"),
         ("datatype", "float"), ("datatype", "string"), ("datatype", "string")], l.get_list_token())
 
+    # file contains only keyword
+    def test_keywords (self):
+        l = lexer.lex(" if")
+        self.assertEqual([("keyword", "if")], l.get_list_token())
+
+        l = lexer.lex("if if ")
+        self.assertEqual([("keyword", "if"), ("keyword", "if")], l.get_list_token())
+
+        l = lexer.lex("if if if if if if ")
+        self.assertEqual([("keyword", "if"), ("keyword", "if"), ("keyword", "if"), 
+        ("keyword", "if"), ("keyword", "if"), ("keyword", "if")], l.get_list_token())
+
 
 if __name__ == '__main__':
 

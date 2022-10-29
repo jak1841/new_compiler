@@ -1,18 +1,10 @@
-bool y = false or false;
-print(y);
-bool y = false or true;
-print(y);
-bool y = true or false;
-print(y);
-bool y = true or true;
+bool y = False or True;
 print(y);
 
-bool x = true and true;
+print(1 + 3);
+
+float x = 594;
+
 print(x);
-bool x = true and false;
-print(x);
-bool x = false and true;
-print(x);
-bool x = false and false;
-print(x);
+
 

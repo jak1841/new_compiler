@@ -17,26 +17,24 @@
 
     production rules
 
-    code: [print_statement | assignment]*
+    code: [print_statement | assignment | if_statement | e]*
+
+    if_statement -> if (condition) {code}
+    condition -> bool_exp
+
 
     print_statement: print(string); | print(exp) | print(identifier);
-
-    assignment -> datatype identifier = [String | exp | identifier | boolean];
-
+    assignment -> datatype identifier = [String | exp | identifier ];
 
 
-    bool_exp -> bool_exp or bool_term | bool_term
-    bool_term -> bool_term and bool_factor | bool_factor
-    bool_factor -> true | false | (bool_exp)
-
-
-    ** Eliminating left recursion**
+    ** Boolean Expression Evaluation **
     bool_exp -> bool_term bool_exp'
     bool_exp' -> or bool_term bool_exp' | e
     bool_term -> bool_factor bool_term'
     bool_term' -> or bool_factor bool_term' |
     bool_factor -> true | false | (bool_exp)
 
+    ** Basic Math Expression Evaluation **
     exp: term exp'
     exp': +term exp' | -term exp' | e
     term: factor term'
@@ -90,7 +88,13 @@ class syn_analysis:
 
 
 
-
+    """
+        If Statement
+    """
+    def is_if_statement(self):
+        if (len(self.tokens) > 0 and self.tokens[0][1] == "if"):
+            return True
+        return False
 
 
 

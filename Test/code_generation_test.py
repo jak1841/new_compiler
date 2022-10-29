@@ -16,7 +16,6 @@ class code_generation(unittest.TestCase):
             return f.readlines()
 
 
-
     # given a string which is assumed to be the code will run it and redirect output to output file
     def run_string(self, str):
         # No whitespace
@@ -28,7 +27,6 @@ class code_generation(unittest.TestCase):
             sys.stdout = f
             code.execute_program()
             sys.stdout = temp
-
 
 
     # tests the print statements

@@ -117,6 +117,8 @@ class lex:
             return ("logical_operators", ident)
         elif (ident in ["string", "float", "bool"]):
             return ("datatype", ident)
+        elif (ident == "if"):
+            return ("keyword", ident)
 
 
         return ("identifier", ident)
