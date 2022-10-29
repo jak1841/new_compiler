@@ -17,7 +17,11 @@
 
     production rules
 
-    code: [print_statement | assignment | if_statement | e]*
+    code: multiple_stmt
+    multiple_stmt -> statement multiple_stmt_prime | e
+    multiple_stmt_prime -> statement multiple_stmt_prime | e
+
+    statement -> print_statement | assignment | if_statement
 
     if_statement -> if (condition) {code}
     condition -> bool_exp
@@ -96,6 +100,17 @@ class syn_analysis:
             return True
         return False
 
+    def if_statement(self):
+        self.match_token_val("if")
+        self.match_token_val("(")
+        boolean = self.condition()
+        self.match_token_val(")")
+        self.match_token_val("{")
+
+
+
+    def condition (self):
+        return self.bool_exp()
 
 
     """
@@ -323,6 +338,19 @@ class syn_analysis:
 
 
 
+    # defines what is multiple statements
+    def multiple_stmt(self):
+        if (len(self.tokens) > 0):
+            self.statement()
+            self.multiple_stmt_prime()
+
+    def multiple_stmt_prime(self):
+        if (len(self.tokens) > 0):
+            self.statement()
+            self.multiple_stmt_prime()
+
+
+
 
     # Defines what a line of a code could look like and executes that line
     def statement(self):
@@ -341,8 +369,7 @@ class syn_analysis:
 
     # executes the program line by line
     def execute_program(self):
-        while (len(self.tokens) > 0):
-            self.statement()
+        self.multiple_stmt()
 
 
 
